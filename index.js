@@ -30,14 +30,10 @@ app.get('/api/courses/:id', (req, res) => {
 });
 
 app.post('/api/courses', (req, res) => {
-    const schema = Joi.object({
-        name: Joi.string().min(3).required()
-    });
+    const { error } = validateCourse(req.body);
 
-    const result = schema.validate(req.body);
-
-    if (result.error) {
-        res.status(400).send(result.error.details[0].message);
+    if (error) {
+        res.status(400).send(error.details[0].message);
         return;
     }
 
@@ -57,14 +53,11 @@ app.put('/api/courses/:id', (req, res) => {
         res.status(404).send('The course with the given ID was not found.');
     }
 
-    const schema = Joi.object({
-        name: Joi.string().min(3).required()
-    });
+    //object destructuring : since we are interested only on error property
+    const { error } = validateCourse(req.body);
 
-    const result = schema.validate(req.body);
-
-    if (result.error) {
-        res.status(400).send(result.error.details[0].message);
+    if (error) {
+        res.status(400).send(error.details[0].message);
         return;
     }
 
