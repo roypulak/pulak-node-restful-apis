@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+//enable the app to fetch request body. Bydefault it is not enabled
+app.use(express.json());
+
 const courses = [
     { id: 1, name: 'course1' },
     { id: 2, name: 'course2' },
@@ -12,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/courses', (req, res) => {
-    res.status(200).send(courses);
+    res.send(courses);
 })
 
 app.get('/api/courses/:id', (req, res) => {
@@ -22,6 +25,16 @@ app.get('/api/courses/:id', (req, res) => {
         res.status(404).send('The course with the given ID was not found.');
     }
 
+    res.send(course);
+});
+
+app.post('/api/courses', (req, res) => {
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    };
+
+    courses.push(course);
     res.send(course);
 });
 
