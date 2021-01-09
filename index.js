@@ -1,9 +1,13 @@
 const Joi = require('joi');
+const logger = require('./logger');
+const authenticator = require('./authenticate');
 const express = require('express');
 const app = express();
 
 //enable the app to fetch request body. Bydefault it is not enabled
 app.use(express.json());
+app.use(logger);
+app.use(authenticator);
 
 const courses = [
     { id: 1, name: 'course1' },
@@ -16,14 +20,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/courses', (req, res) => {
-    res.send(courses);
+    return res.send(courses);
 })
 
 app.get('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
 
     if (!course) {
-       return res.status(404).send('The course with the given ID was not found.');
+        return res.status(404).send('The course with the given ID was not found.');
     }
 
     return res.send(course);
@@ -49,19 +53,18 @@ app.put('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
 
     if (!course) {
-        res.status(404).send('The course with the given ID was not found.');
+        return res.status(404).send('The course with the given ID was not found.');
     }
 
     //object destructuring : since we are interested only on error property
     const { error } = validateCourse(req.body);
 
     if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
+        return res.status(400).send(error.details[0].message);
     }
 
     course.name = req.body.name;
-    res.send(course);
+    return res.send(course);
 });
 
 app.delete('/api/courses/:id', (req, res) => {
@@ -74,7 +77,7 @@ app.delete('/api/courses/:id', (req, res) => {
     const index = courses.indexOf(course);
     courses.splice(index, 1);
 
-    res.send(course);
+    return res.send(course);
 });
 
 function validateCourse(course) {
