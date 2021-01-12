@@ -6,8 +6,12 @@ const app = express();
 
 //enable the app to fetch request body. Bydefault it is not enabled
 app.use(express.json());
+//enable the app to fetch url encoded payload
+app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 app.use(authenticator);
+app.use(express.static('public'));
+
 
 const courses = [
     { id: 1, name: 'course1' },
