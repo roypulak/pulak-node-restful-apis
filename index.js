@@ -4,6 +4,7 @@ const authenticator = require('./authenticate');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const config = require('config');
 const app = express();
 
 //enable the app to fetch request body. Bydefault it is not enabled
@@ -14,6 +15,11 @@ app.use(logger);
 app.use(authenticator);
 app.use(express.static('public'));
 app.use(helmet());
+
+//Configuration
+console.log('Application Name: ' + config.get('name'));
+console.log('Mail Server: ' + config.get('mail.host'));
+console.log('Mail Password: ' + config.get('mail.password'));
 
 //alternate way to read environment variable for instance: process.env.NODE_ENV
 if (app.get('env') === 'development') {
