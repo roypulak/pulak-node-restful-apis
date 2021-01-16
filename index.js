@@ -7,6 +7,9 @@ const morgan = require('morgan');
 const config = require('config');
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', './views'); //default
+
 //enable the app to fetch request body. Bydefault it is not enabled
 app.use(express.json());
 //enable the app to fetch url encoded payload
@@ -19,7 +22,7 @@ app.use(helmet());
 //Configuration
 console.log('Application Name: ' + config.get('name'));
 console.log('Mail Server: ' + config.get('mail.host'));
-console.log('Mail Password: ' + config.get('mail.password'));
+//console.log('Mail Password: ' + config.get('mail.password'));
 
 //alternate way to read environment variable for instance: process.env.NODE_ENV
 if (app.get('env') === 'development') {
@@ -34,7 +37,8 @@ const courses = [
 ];
 
 app.get('/', (req, res) => {
-    return res.send('Hello World!!');
+    //return res.send('Hello World!!');
+    return res.render('index', { title: 'My Express App', message: 'Hello' });
 });
 
 app.get('/api/courses', (req, res) => {
