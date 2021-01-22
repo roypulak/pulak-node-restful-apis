@@ -1,16 +1,23 @@
 console.log('Before');
-const user = getUser(1);
-console.log(user);
+getUser(1, (user) => {
+    console.log('User', user);
+
+    getRepositories(user.githubUsername, (repos) => {
+        console.log('Repositories ', repos);
+    })
+});
 console.log('After');
 
-//pattern to deal with aync code
-//Callbacks
-//Promises
-//Async/await
-
-function getUser(id) {
+function getUser(id, callback) {
     setTimeout(() => {
         console.log('Reading a user from a database...');
-        return { id: id, githubUsername: 'roypulak' };
+        callback({ id: id, githubUsername: 'roypulak' });
+    }, 2000);
+}
+
+function getRepositories(username, callback) {
+    setTimeout(() => {
+        console.log('Calling Github API ...');
+        callback(['repo1', 'repo2', 'repo3']);
     }, 2000);
 }
