@@ -30,7 +30,10 @@ async function createCourse() {
 //createCourse();
 
 async function getCourses() {
-    const courses = await Course.find({ author: 'Mosh', isPublish: true })
+    const courses = await Course
+        //.find({ price: { $in: [10, 15, 20] } })
+        //.find({ price: { $gte: 10, $lte: 20 } })
+        .find({ author: 'Mosh', isPublish: true })
         .limit(10)
         .sort({ name: 1 }) //-1 means decending
         .select({ name: 1, tags: 1 }); //we want only name and tags
