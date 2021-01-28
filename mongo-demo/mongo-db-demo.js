@@ -11,12 +11,21 @@ const courseSchema = new mongoose.Schema({
     tags: [String],
     date: { type: Date, default: Date.now },
     isPublish: Boolean
-});    
+});
 
 const Course = mongoose.model('Course', courseSchema);
-const course = new Course({
-    name: 'Node.js Course',
-    author: 'Mosh',
-    tags: ['node', 'backend'],
-    isPublish: true
-});
+
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular Course',
+        author: 'Mosh',
+        tags: ['angular', 'frontend'],
+        isPublish: true
+    });
+
+    const result = await course.save();
+    console.log(result);
+}
+
+createCourse();
+
