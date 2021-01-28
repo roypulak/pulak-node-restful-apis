@@ -27,5 +27,15 @@ async function createCourse() {
     console.log(result);
 }
 
-createCourse();
+//createCourse();
 
+async function getCourses() {
+    const courses = await Course.find({ author: 'Mosh', isPublish: true })
+        .limit(10)
+        .sort({ name: 1 }) //-1 means decending
+        .select({ name: 1, tags: 1 }); //we want only name and tags
+
+    console.log(courses);
+}
+
+getCourses();
