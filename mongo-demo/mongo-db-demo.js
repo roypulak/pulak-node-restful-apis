@@ -30,9 +30,11 @@ async function createCourse() {
 //createCourse();
 
 async function getCourses() {
+    //in reality pageNumber and pageSize are expected come from api parameter
+    const pageNumber = 2;
+    const pageSize = 10;
+
     const courses = await Course
-        //.find({ price: { $in: [10, 15, 20] } })
-        //.find({ price: { $gte: 10, $lte: 20 } })
         .find({ author: 'Mosh', isPublish: true })
         .limit(10)
         .sort({ name: 1 }) //-1 means decending
