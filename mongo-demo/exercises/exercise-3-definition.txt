@@ -1,0 +1,4 @@
+Exercise - 3
+
+Get all the published courses that are $15 or more,
+or have the word 'by' in their title
