@@ -45,7 +45,8 @@ async function getCourses() {
 
 //getCourses();
 
-async function updateCourse(id) {
+//query first approach.
+async function updateCourseApproach1(id) {
     const course = await Course.findById(id);
 
     if (!course) return;
@@ -60,4 +61,18 @@ async function updateCourse(id) {
     console.log(result);
 }
 
-updateCourse('6012b1f3c82d1f3dfb22eff5');
+//updateCourseApproach1('6012b1f3c82d1f3dfb22eff5');
+
+//update first approach.
+async function updateCourseApproach2(id) {
+    const course = await Course.findByIdAndUpdate(id, {
+       $set: {
+           author: 'Pulak',
+           isPublish: false
+       } 
+    }, {new: true});
+
+    console.log(course);
+}
+
+updateCourseApproach2('6012b1f3c82d1f3dfb22eff5');
