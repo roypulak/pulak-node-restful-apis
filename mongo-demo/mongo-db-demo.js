@@ -75,4 +75,14 @@ async function updateCourseApproach2(id) {
     console.log(course);
 }
 
-updateCourseApproach2('6012b1f3c82d1f3dfb22eff5');
+//updateCourseApproach2('6012b1f3c82d1f3dfb22eff5');
+
+async function removeCourse(id) {
+    //if we want to delete multiple records with the given id
+    //const result = await Course.deleteMany({_id: id});
+
+    const course = await Course.findByIdAndRemove(id);
+    console.log(course);
+}
+
+//removeCourse('6012b1f3c82d1f3dfb22eff5');
