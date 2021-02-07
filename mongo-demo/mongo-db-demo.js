@@ -15,7 +15,9 @@ const courseSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['web', 'mobile', 'network']
+        enum: ['web', 'mobile', 'network'],
+        lowercase: true,
+        trim: true
     },
     author: String,
     tags: {
@@ -36,7 +38,11 @@ const courseSchema = new mongoose.Schema({
     isPublish: Boolean,
     price: {
         type: Number,
-        required: function () { return this.isPublish }
+        required: function () { return this.isPublish },
+        min: 10,
+        max: 200,
+        get: v => Math.round(v),
+        set: v => Math.round(v)
     }
 });
 
@@ -45,11 +51,11 @@ const Course = mongoose.model('Course', courseSchema);
 async function createCourse() {
     const course = new Course({
         name: 'Angular Course',
-        category: '-',
+        category: 'Web',
         author: 'Mosh',
-        tags: null,
+        tags: ['frontend'],
         isPublish: true,
-        price: 15
+        price: 15.8
     });
 
     try {
