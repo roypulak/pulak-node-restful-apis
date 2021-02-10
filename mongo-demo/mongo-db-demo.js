@@ -6,11 +6,44 @@ mongoose.connect('mongodb://localhost/playground')
     .catch(err => console.error('Could not connect to MongoDB..', err));
 
 const courseSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 255,
+        //match: /pattern/
+    },
+    category: {
+        type: String,
+        enum: ['web', 'mobile', 'network'],
+        lowercase: true,
+        trim: true
+    },
     author: String,
-    tags: [String],
+    tags: {
+        type: Array,
+        validate: {
+            isAsync: true,
+            validator: function (v, callback) {
+                //Do some async work
+                setTimeout(() => {
+                    const result = v && v.length > 0;
+                    callback(result);
+                }, 4000);
+            },
+            message: 'A course should have at least one tag'
+        }
+    },
     date: { type: Date, default: Date.now },
-    isPublish: Boolean
+    isPublish: Boolean,
+    price: {
+        type: Number,
+        required: function () { return this.isPublish },
+        min: 10,
+        max: 200,
+        get: v => Math.round(v),
+        set: v => Math.round(v)
+    }
 });
 
 const Course = mongoose.model('Course', courseSchema);
@@ -18,16 +51,23 @@ const Course = mongoose.model('Course', courseSchema);
 async function createCourse() {
     const course = new Course({
         name: 'Angular Course',
+        category: 'Web',
         author: 'Mosh',
-        tags: ['angular', 'frontend'],
-        isPublish: true
+        tags: ['frontend'],
+        isPublish: true,
+        price: 15.8
     });
 
-    const result = await course.save();
-    console.log(result);
+    try {
+        const result = await course.save();
+        console.log(result);
+    } catch (ex) {
+        for (field in ex.errors)
+            console.log(ex.errors[field].message);
+    }
 }
 
-//createCourse();
+createCourse();
 
 async function getCourses() {
     //in reality pageNumber and pageSize are expected come from api parameter
@@ -66,11 +106,11 @@ async function updateCourseApproach1(id) {
 //update first approach.
 async function updateCourseApproach2(id) {
     const course = await Course.findByIdAndUpdate(id, {
-       $set: {
-           author: 'Pulak',
-           isPublish: false
-       } 
-    }, {new: true});
+        $set: {
+            author: 'Pulak',
+            isPublish: false
+        }
+    }, { new: true });
 
     console.log(course);
 }
