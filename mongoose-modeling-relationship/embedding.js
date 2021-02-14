@@ -14,16 +14,13 @@ const Author = mongoose.model('Author', authorSchema);
 
 const Course = mongoose.model('Course', new mongoose.Schema({
   name: String,
-  author: {
-    type: authorSchema,
-    required: true
-  }
+  authors: [authorSchema]
 }));
 
-async function createCourse(name, author) {
+async function createCourse(name, authors) {
   const course = new Course({
     name,
-    author
+    authors: authors
   });
 
   const result = await course.save();
@@ -46,8 +43,37 @@ async function updateAuthor(courseId) {
     }
   });
 }
-//Execution Order 1
+
+async function addAuthor(courseId, author) {
+  const course = await Course.findById(courseId);
+
+  course.authors.push(author);
+  course.save();
+}
+
+async function removeAuthor(courseId, authorId) {
+  const course = await Course.findById(courseId);
+  const author = course.authors.id(authorId);
+  author.remove();
+  course.save();
+}
+
+//Execution Order 1 commit - 33.04
 //createCourse('Node Course', new Author({ name: 'Pulak' }));
 
-//Execution Order 2
-updateAuthor('60291bdaec07982021063dcd');
+//Execution Order 2 commit - 33.04
+//updateAuthor('60291bdaec07982021063dcd');
+
+//Execution Order 1 commit 33.05
+/*createCourse('Node Course', [
+  new Author({ name: 'Pulak' }),
+  new Author({ name: 'Roy' })
+]);*/
+
+//Execution Order 2 commit 33.05
+//addAuthor('60292a9f9a73d5273103b14c', new Author({name: 'Amy'}));
+
+//Execution Order 3 commit 33.05
+removeAuthor('60292a9f9a73d5273103b14c', '60292c3afafa4c2813463643');
+
+
