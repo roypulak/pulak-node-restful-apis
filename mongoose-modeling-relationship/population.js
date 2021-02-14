@@ -42,8 +42,10 @@ async function createCourse(name, author) {
 async function listCourses() {
   const courses = await Course
     .find()
-    .select('name');
-  console.log(courses);
+    .populate('author', 'name -_id')
+    .select('name author');
+
+   console.log(JSON.stringify(courses));
 }
 
 //execution order 1
@@ -52,4 +54,4 @@ async function listCourses() {
 //execution order 2
 //createCourse('Node Course', '6026c67ad93e3f6cbf49ad5c');
 
-//listCourses();
+listCourses();
