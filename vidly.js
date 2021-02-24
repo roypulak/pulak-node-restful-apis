@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const genres = require('./routes/vidly/genres');
 const customers = require('./routes/vidly/customers');
 const movies = require('./routes/vidly/movies');
