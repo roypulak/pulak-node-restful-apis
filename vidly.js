@@ -1,4 +1,6 @@
-const mongoose = require('mongoose')
+const dotenv = require('dotenv');
+const config = require('config');
+const mongoose = require('mongoose');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const genres = require('./routes/vidly/genres');
@@ -9,6 +11,12 @@ const users = require('./routes/vidly/users');
 const auth = require('./routes/vidly/auth');
 const express = require('express');
 const app = express();
+
+dotenv.config();
+if (!process.env.VIDLY_JWT_PRIVATE_KEY) {
+    console.error('FATAL ERROR: VIDLY_JWT_PRIVATE_KEY is not defined.');
+    process.exit(1);
+}
 
 app.use(express.json());
 app.use('/api/vidly/genres', genres);

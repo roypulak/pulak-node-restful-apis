@@ -1,3 +1,4 @@
+const config =  require('config');
 const jwt =  require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
@@ -16,11 +17,10 @@ router.post('/', async (req, res) => {
     const validPassword = await bcrypt.compare(req.body.password, user.password);
 
     if (!validPassword) {
-        return res.status(400).send('Invalid email or password.')
+        return res.status(400).send('Invalid email or password.');
     }
 
-    //private key should be feeded from environment. For the sake of demonstration, we have hardcoded this.
-    const token = jwt.sign({_id: user._id}, 'jwtPrivateKey')
+    const token = jwt.sign({_id: user._id}, process.env.VIDLY_JWT_PRIVATE_KEY);
     res.send(token);
 });
 
