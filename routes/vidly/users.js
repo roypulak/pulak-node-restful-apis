@@ -1,3 +1,4 @@
+const jwt =  require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const { User, validate } = require('../../models/user');
@@ -16,7 +17,9 @@ router.post('/', async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
     
     await user.save();
-    res.send(_.pick(user, ['_id', 'name', 'email']));
+
+    const token = jwt.sign({_id: user._id}, process.env.VIDLY_JWT_PRIVATE_KEY);
+    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
 });
 
 module.exports = router;
