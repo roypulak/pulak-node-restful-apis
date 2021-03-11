@@ -1,3 +1,4 @@
+const jwt =  require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const passwordComplexity = require("joi-password-complexity");
@@ -35,6 +36,11 @@ const userSchema = new mongoose.Schema(
         }
     }
 );
+
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({_id: this._id}, process.env.VIDLY_JWT_PRIVATE_KEY);
+    return token;
+}
 
 const User = mongoose.model('User', userSchema);
 
