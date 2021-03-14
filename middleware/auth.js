@@ -7,7 +7,7 @@ module.exports = function (req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.VIDLY_JWT_PRIVATE_KEY)
-        //req.user = decoded;
+        req.user = decoded;
         next();
     } catch (ex) {
         res.status(400).send('Invalid token.')
