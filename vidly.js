@@ -1,3 +1,4 @@
+const errorMiddlewire = require('./middleware/error');
 const dotenv = require('dotenv');
 const config = require('config');
 const mongoose = require('mongoose');
@@ -25,6 +26,7 @@ app.use('/api/vidly/movies', movies);
 app.use('/api/vidly/rentals', rentals);
 app.use('/api/vidly/users', users);
 app.use('/api/vidly/auth', auth);
+app.use(errorMiddlewire);
 
 mongoose.connect('mongodb://localhost/vidly')
     .then(() => console.log('Connected to MongoDB..'))
