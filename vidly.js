@@ -1,3 +1,4 @@
+require('express-async-errors');
 const errorMiddlewire = require('./middleware/error');
 const dotenv = require('dotenv');
 const config = require('config');
