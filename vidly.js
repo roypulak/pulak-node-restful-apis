@@ -1,4 +1,5 @@
 require('express-async-errors');
+const winston = require('winston');
 const errorMiddlewire = require('./middleware/error');
 const dotenv = require('dotenv');
 const config = require('config');
@@ -13,6 +14,8 @@ const users = require('./routes/vidly/users');
 const auth = require('./routes/vidly/auth');
 const express = require('express');
 const app = express();
+
+winston.add(new winston.transports.File({ filename: 'logfile.log'}));
 
 dotenv.config();
 if (!process.env.VIDLY_JWT_PRIVATE_KEY) {

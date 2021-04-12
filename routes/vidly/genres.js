@@ -6,6 +6,8 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
+  //we need to remove the following line. It is only for learning pupose
+  throw new Error('Could not get the genres.');
   const genres = await Genre.find().sort('name');
   res.send(genres);
 });
