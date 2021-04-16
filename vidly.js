@@ -1,5 +1,6 @@
 require('express-async-errors');
 const winston = require('winston');
+require('winston-mongodb');
 const errorMiddlewire = require('./middleware/error');
 const dotenv = require('dotenv');
 const config = require('config');
@@ -16,6 +17,12 @@ const express = require('express');
 const app = express();
 
 winston.add(new winston.transports.File({ filename: 'logfile.log'}));
+winston.add(new winston.transports.MongoDB(
+    { 
+        db: 'mongodb://localhost/vidly',
+        level: 'error'
+    }
+));
 
 dotenv.config();
 if (!process.env.VIDLY_JWT_PRIVATE_KEY) {
