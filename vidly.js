@@ -16,10 +16,12 @@ const auth = require('./routes/vidly/auth');
 const express = require('express');
 const app = express();
 
-process.on('uncaughtException', (ex) => {
-    console.log('WE GOT AN UNCAUGHT EXCEPTION');
-    winston.error(ex.message, ex);
-})
+winston.handleExceptions(
+    new winston.transports.File({filename: 'uncauchtException.log'}));
+
+process.on('unhandledRejection', (ex) => {
+    throw ex;
+});
 
 winston.add(new winston.transports.File({ filename: 'logfile.log'}));
 winston.add(new winston.transports.MongoDB(
@@ -29,7 +31,8 @@ winston.add(new winston.transports.MongoDB(
     }
 ));
 
-throw new Error('Something failed during startup.');
+const p = Promise.reject(new Error('Something failed miserably!'));
+p.then(() => console.log('Done'));
 
 dotenv.config();
 if (!process.env.VIDLY_JWT_PRIVATE_KEY) {
