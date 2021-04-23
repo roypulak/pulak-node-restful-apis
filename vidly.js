@@ -3,12 +3,12 @@ const winston = require('winston');
 require('winston-mongodb');
 const dotenv = require('dotenv');
 const config = require('config');
-const mongoose = require('mongoose');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const express = require('express');
 const app = express();
 require('./startup/routes')(app);
+require('./startup/db')();
 
 winston.handleExceptions(
     new winston.transports.File({ filename: 'uncauchtException.log' }));
@@ -34,12 +34,5 @@ if (!process.env.VIDLY_JWT_PRIVATE_KEY) {
     process.exit(1);
 }
 
-
-mongoose.connect('mongodb://localhost/vidly')
-    .then(() => console.log('Connected to MongoDB..'))
-    .catch(err => console.error('Could not connect to MongoDB..', err))
-
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
-
-exports.mongoose = mongoose;
