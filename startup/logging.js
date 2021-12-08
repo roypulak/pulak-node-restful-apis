@@ -19,6 +19,6 @@ module.exports = function () {
         }
     ));
 
-    const p = Promise.reject(new Error('Something failed miserably!'));
-    p.then(() => console.log('Done'));
+    //const p = Promise.reject(new Error('Something failed miserably!'));
+    //p.then(() => console.log('Done'));
 }
