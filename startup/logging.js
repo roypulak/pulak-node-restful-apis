@@ -3,7 +3,7 @@ const winston = require('winston');
 require('winston-mongodb');
 
 module.exports = function () {
-    winston.handleExceptions(
+    winston.exceptions.handle(
         new winston.transports.Console({colorize: true, prettyPrint: true}),
         new winston.transports.File({ filename: 'uncauchtException.log' }));
 
