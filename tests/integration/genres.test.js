@@ -3,7 +3,7 @@ const { Genre } = require("../../models/genre");
 
 let server;
 
-describe("/api/genres", () => {
+describe("/api/vidly/genres", () => {
   beforeEach(() => {
     server = require("../../vidly");
   });
@@ -29,6 +29,18 @@ describe("/api/genres", () => {
       expect(res.body.length).toBe(2);
       expect(res.body.some((g) => g.name === "genre1")).toBeTruthy();
       expect(res.body.some((g) => g.name === "genre2")).toBeTruthy();
+    });
+  });
+
+  describe("GET /:id", () => {
+    it("should return a genre if valid id is passed", async () => {
+      const genre = new Genre({ name: "genre1" });
+      await genre.save();
+
+      const res = await request(server).get("/api/vidly/genres/" + genre._id);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("name", genre.name);
     });
   });
 });
