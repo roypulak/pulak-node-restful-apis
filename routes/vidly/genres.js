@@ -1,9 +1,9 @@
+const validateObjectId = require("../../middleware/validateObjectId");
 const authMiddleware = require("../../middleware/auth");
 const asyncMiddleware = require("../../middleware/async");
 const adminMiddleware = require("../../middleware/admin");
 const { Genre, validate } = require("../../models/genre");
 const express = require("express");
-const ObjectId = require("mongoose").Types.ObjectId;
 const { request } = require("express");
 const router = express.Router();
 
@@ -57,11 +57,8 @@ router.delete(
 
 router.get(
   "/:id",
+  validateObjectId,
   asyncMiddleware(async (req, res) => {
-    if (!ObjectId.isValid(req.params.id)) {
-      return res.status(404).send("Invalid ID.");
-    }
-
     const genre = await Genre.findById(req.params.id);
     if (!genre)
       return res.status(404).send("The genre with the given ID was not found.");
