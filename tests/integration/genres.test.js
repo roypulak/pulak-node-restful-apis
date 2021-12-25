@@ -12,6 +12,7 @@ describe("/api/vidly/genres", () => {
   afterEach(async () => {
     server.close();
     await Genre.remove({});
+    await User.remove({});
   });
 
   describe("GET /", () => {
@@ -57,7 +58,7 @@ describe("/api/vidly/genres", () => {
         .post("/api/vidly/genres")
         .send({ name: "genre1" });
 
-      expect(res.status).toBe(401);  
+      expect(res.status).toBe(401);
     });
 
     it("should return 400 if genre is less than 5 characters", async () => {
@@ -65,23 +66,48 @@ describe("/api/vidly/genres", () => {
 
       const res = await request(server)
         .post("/api/vidly/genres")
-        .set('x-auth-token', token)
+        .set("x-auth-token", token)
         .send({ name: "genr" });
-
-      expect(res.status).toBe(400);  
+      
+      expect(res.status).toBe(400);
     });
 
     it("should return 400 if genre is more than 100 characters", async () => {
       const token = new User().generateAuthToken();
 
-      const name = new Array(102).join('a');
+      const name = new Array(102).join("a");
 
       const res = await request(server)
         .post("/api/vidly/genres")
-        .set('x-auth-token', token)
+        .set("x-auth-token", token)
         .send({ name: name });
 
-      expect(res.status).toBe(400);  
+      expect(res.status).toBe(400);
+    });
+
+    it("should save genre if it is valid", async () => {
+      const token = new User().generateAuthToken();
+
+      const res = await request(server)
+        .post("/api/vidly/genres")
+        .set("x-auth-token", token)
+        .send({ name: "genre1" });
+  
+      const genre = await Genre.find({ name: "genre1" });
+
+      expect(genre).not.toBeNull();
+    });
+
+    it("should return genre if it is valid", async () => {
+      const token = new User().generateAuthToken();
+  
+      const res = await request(server)
+        .post("/api/vidly/genres")
+        .set("x-auth-token", token)
+        .send({ name: "genre1" });
+      
+      expect(res.body).toHaveProperty("_id");
+      expect(res.body).toHaveProperty("name", "genre1");
     });
   });
 });
