@@ -10,9 +10,9 @@ describe("/api/vidly/genres", () => {
   });
 
   afterEach(async () => {
-    server.close();
     await Genre.remove({});
     await User.remove({});
+    server.close();
   });
 
   describe("GET /", () => {
