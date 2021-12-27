@@ -6,6 +6,7 @@ const { Genre, validate } = require("../../models/genre");
 const express = require("express");
 const { request } = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 router.get("/", async (req, res) => {
   const genres = await Genre.find().sort("name");
@@ -28,15 +29,21 @@ router.post(
 
 router.put(
   "/:id",
+  authMiddleware,
   asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+      return res.status(404).send("The genre with the given ID was not valid.");
+    }
 
     const genre = await Genre.findByIdAndUpdate(
       req.params.id,
       { name: req.body.name },
       { new: true }
     );
+
     if (!genre)
       return res.status(404).send("The genre with the given ID was not found.");
 
@@ -48,7 +55,12 @@ router.delete(
   "/:id",
   [authMiddleware, adminMiddleware],
   asyncMiddleware(async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+      return res.status(404).send("The genre with the given ID was not valid.");
+    }
+
     const genre = await Genre.findByIdAndRemove(req.params.id);
+    
     if (!genre)
       return res.status(404).send("The genre with the given ID was not found.");
 
