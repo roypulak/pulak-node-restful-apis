@@ -3,7 +3,7 @@ const winston = require('winston');
 require('winston-mongodb');
 
 module.exports = function () {
-    winston.handleExceptions(
+    winston.exceptions.handle(
         new winston.transports.Console({colorize: true, prettyPrint: true}),
         new winston.transports.File({ filename: 'uncauchtException.log' }));
 
@@ -19,6 +19,6 @@ module.exports = function () {
         }
     ));
 
-    const p = Promise.reject(new Error('Something failed miserably!'));
-    p.then(() => console.log('Done'));
+    //const p = Promise.reject(new Error('Something failed miserably!'));
+    //p.then(() => console.log('Done'));
 }
