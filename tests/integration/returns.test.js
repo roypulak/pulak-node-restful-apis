@@ -59,19 +59,17 @@ describe("/api/vidly/returns", () => {
   });
 
   it("should return 400 if customerId is not provided", async () => {
-    const res = await request(server)
-      .post("/api/vidly/returns")
-      .set("x-auth-token", token)
-      .send({ movieId });
+    customerId = "";
+
+    const res = await exec();
 
     expect(res.status).toBe(400);
   });
 
   it("should return 400 if movieId is not provided", async () => {
-    const res = await request(server)
-    .post("/api/vidly/returns")
-    .set("x-auth-token", token)
-    .send({ customerId });
+    movieId = "";
+
+    const res = await exec();
 
     expect(res.status).toBe(400);
   });
