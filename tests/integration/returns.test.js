@@ -1,14 +1,26 @@
+const request = require('supertest');
 const {Rental} = require('../../models/rental');
 const mongoose = require('mongoose');
+const { User } = require('../../models/user');
 
 describe('/api/vidly/returns', () => {
     let server;
     let customerId;
     let movieId;
     let rental;
+    let token;
+
+    const exec = async () => {
+        return await request(server)
+          .post('/api/vidly/returns')
+          .set('x-auth-token', token)
+          .send();
+      }
 
     beforeEach(async () => {
         server = require('../../vidly');
+
+        token = new User().generateAuthToken();
 
         customerId = mongoose.Types.ObjectId();
         movieId = mongoose.Types.ObjectId();
@@ -37,4 +49,12 @@ describe('/api/vidly/returns', () => {
         const result = await Rental.findById(rental._id);
         expect(result).not.toBeNull();
     });
+
+    it("should return 401 if client is not logged in", async () => {
+        token = '';
+        
+        const res = await exec();
+  
+        expect(res.status).toBe(401);
+      });
 });
