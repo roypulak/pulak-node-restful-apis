@@ -73,4 +73,22 @@ describe("/api/vidly/returns", () => {
 
     expect(res.status).toBe(400);
   });
+
+  it("Return 404 if no rental found for this customer/movie", async () => {
+    customerId = mongoose.Types.ObjectId();
+    //movieId = mongoose.Types.ObjectId();
+
+    const res = await exec();
+
+    expect(res.status).toBe(404);
+  });
+
+  it("Return 404 if no rental found for this customer/movie", async () => {
+
+    movieId = mongoose.Types.ObjectId();
+
+    const res = await exec();
+    
+    expect(res.status).toBe(404);
+  });
 });
