@@ -9,11 +9,11 @@ router.post(
   authMiddleware,
   asyncMiddleware(async (req, res) => {
     if (!req.body.customerId) {
-      res.status(400).send("Customer ID has not been provided.");
+      return res.status(400).send("Customer ID has not been provided.");
     }
 
     if (!req.body.movieId) {
-      res.status(400).send("Movie ID has not been provided.");
+      return res.status(400).send("Movie ID has not been provided.");
     }
 
     let rental = await Rental.findOne({
@@ -22,7 +22,11 @@ router.post(
     });
 
     if (!rental) {
-      res.status(404).send("Rental not found.");
+      return res.status(404).send("Rental not found.");
+    }
+
+    if (rental.dateReturned){
+        return res.status(400).send("Return already processed.")
     }
 
     res.status(200).send("Api end point building in progress...");

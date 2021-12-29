@@ -84,11 +84,19 @@ describe("/api/vidly/returns", () => {
   });
 
   it("Return 404 if no rental found for this customer/movie", async () => {
-
     movieId = mongoose.Types.ObjectId();
 
     const res = await exec();
     
     expect(res.status).toBe(404);
+  });
+
+  it("Return 400 if rental already processed", async () => {
+    rental.dateReturned = new Date();
+    await rental.save();
+
+    const res = await exec();
+    
+    expect(res.status).toBe(400);
   });
 });
