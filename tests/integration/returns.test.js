@@ -2,6 +2,7 @@ const request = require("supertest");
 const { Rental } = require("../../models/rental");
 const mongoose = require("mongoose");
 const { User } = require("../../models/user");
+const moment = require("moment");
 
 describe("/api/vidly/returns", () => {
   let server;
@@ -112,5 +113,16 @@ describe("/api/vidly/returns", () => {
     const diff = new Date() - rentalInDb.dateReturned;
 
     expect(diff).toBeLessThan(10 * 1000);
+  });
+
+  it("should set the rentalFee if input is valid", async () => {
+    rental.dateOut = moment().add(-7, "days").toDate();
+    await rental.save();
+
+    const res = await exec();
+
+    const rentalInDb = await Rental.findById(rental._id);
+
+    expect(rentalInDb.rentalFee).toBe(14);
   });
 });
