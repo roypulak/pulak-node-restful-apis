@@ -17,19 +17,22 @@ router.post(
     }
 
     let rental = await Rental.findOne({
-        'customer._id': req.body.customerId,
-        'movie._id': req.body.movieId
+      "customer._id": req.body.customerId,
+      "movie._id": req.body.movieId,
     });
 
     if (!rental) {
       return res.status(404).send("Rental not found.");
     }
 
-    if (rental.dateReturned){
-        return res.status(400).send("Return already processed.")
+    if (rental.dateReturned) {
+      return res.status(400).send("Return already processed.");
     }
 
-    res.status(200).send("Api end point building in progress...");
+    rental.dateReturned = new Date();
+    await rental.save();
+
+    res.status(200).send();
   })
 );
 
