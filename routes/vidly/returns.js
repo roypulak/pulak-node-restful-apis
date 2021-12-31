@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require("../../middleware/auth");
 const asyncMiddleware = require("../../middleware/async");
 const { Rental } = require("../../models/rental");
+const { Movie } = require("../../models/movie");
 const moment = require("moment");
 
 router.post(
@@ -32,12 +33,12 @@ router.post(
 
     rental.dateReturned = new Date();
     const rentalDays = moment().diff(rental.dateOut, "days");
-    
     rental.rentalFee = rentalDays * rental.movie.dailyRentalRate;
-    
     await rental.save();
-    console.log(rental.rentalFee);
-    res.status(200).send();
+
+    await Movie.findByIdAndUpdate(rental.movie._id, { $inc: { numberInStock: 1 } });
+
+    return res.status(200).send();
   })
 );
 
