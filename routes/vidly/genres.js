@@ -2,11 +2,13 @@ const validateObjectId = require("../../middleware/validateObjectId");
 const authMiddleware = require("../../middleware/auth");
 const asyncMiddleware = require("../../middleware/async");
 const adminMiddleware = require("../../middleware/admin");
-const { Genre, validate } = require("../../models/genre");
+const validate = require("../../middleware/validate");
+const { Genre } = require("../../models/genre");
 const express = require("express");
 const { request } = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 router.get("/", async (req, res) => {
   const genres = await Genre.find().sort("name");
@@ -15,11 +17,8 @@ router.get("/", async (req, res) => {
 
 router.post(
   "/",
-  authMiddleware,
+  [authMiddleware, validate(validateGenre)],
   asyncMiddleware(async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     let genre = new Genre({ name: req.body.name });
     genre = await genre.save();
  
@@ -29,11 +28,8 @@ router.post(
 
 router.put(
   "/:id",
-  authMiddleware,
+  [authMiddleware, validate(validateGenre)],
   asyncMiddleware(async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     if (!mongoose.Types.ObjectId.isValid(req.params.id)){
       return res.status(404).send("The genre with the given ID was not valid.");
     }
@@ -79,5 +75,13 @@ router.get(
     res.send(genre);
   })
 );
+
+function validateGenre(genre) {
+  const schema = Joi.object({
+      name: Joi.string().min(5).max(100).required()
+  });
+
+  return schema.validate(genre);
+}
 
 module.exports = router;
