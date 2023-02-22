@@ -5,6 +5,7 @@ const movies = require('../routes/vidly/movies');
 const rentals = require('../routes/vidly/rentals');
 const users = require('../routes/vidly/users');
 const auth = require('../routes/vidly/auth');
+const returns = require('../routes/vidly/returns');
 const errorMiddlewire = require('../middleware/error');
 
 module.exports = function (app) {
@@ -15,5 +16,6 @@ module.exports = function (app) {
     app.use('/api/vidly/rentals', rentals);
     app.use('/api/vidly/users', users);
     app.use('/api/vidly/auth', auth);
+    app.use('/api/vidly/returns', returns);
     app.use(errorMiddlewire);
 }
